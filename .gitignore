@@ -1,2 +1,5 @@
 fichier_bidon1
 fichier_bidon2
+*.Rproj
+*.Rproj.user
+_admin
