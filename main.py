@@ -5,13 +5,17 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QCursor
 from datetime import datetime
 from PyQt5.QtCore import QDateTime, Qt, QTimer
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 
 class Activity(QWidget):
     start_time = None
+    restart_time = None
     end_time = None
     duration = None
+    pause_count = 0
+    previous_duration = timedelta(0)
+
     def __init__(self,parent=None):
         super(Activity, self).__init__(parent)
         self.setWindowTitle('QTimer example')
@@ -20,7 +24,7 @@ class Activity(QWidget):
         self.label=QLabel('Label')
         self.label.setAlignment(Qt.AlignCenter)
         self.startBtn=QPushButton('Start')
-        self.endBtn=QPushButton('Stop')
+        self.pauseBtn=QPushButton('Pause')
 
         outerlayout = QVBoxLayout()
         labellayout = QVBoxLayout()
@@ -31,32 +35,49 @@ class Activity(QWidget):
 
         labellayout.addWidget(self.label)
         layout.addWidget(self.startBtn,1,0)
-        layout.addWidget(self.endBtn,1,1)
+        layout.addWidget(self.pauseBtn,1,1)
         outerlayout.addLayout(labellayout)
         outerlayout.addLayout(layout)
 
         self.startBtn.clicked.connect(self.startTimer)
-        self.endBtn.clicked.connect(self.endTimer)
+        self.pauseBtn.clicked.connect(self.pauseTimer)
 
         self.setLayout(outerlayout)
 
     def showTime(self):
         current_time = datetime.now()
         self.duration = current_time - self.start_time
-        self.label.setText("Activity in Progress\n {}".format(self.duration))
+        if self.pause_count != 0:
+            self.label.setText("Activity in Progress\n You've been working for:\n {}\n You have taken {} breaks".format(self.time_elapsed(), self.pause_count))
+        else:
+            self.label.setText("Activity in Progress\n You've been working for:\n {}\n You have taken no break yet".format(self.time_elapsed()))
 
     def startTimer(self):
         if (self.start_time is None):
             self.start_time = datetime.now()
+            self.restart_time = self.start_time
+        else:
+            self.restart_time = datetime.now()
         print(self.start_time)
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
-        self.endBtn.setEnabled(True)
+        self.pauseBtn.setEnabled(True)
 
-    def endTimer(self):
+    def pauseTimer(self):
         self.timer.stop()
+        self.pause_count += 1
+        self.label.setText("Activity stopped\n You have worked for:\n {}\n You have taken {} breaks".format(self.time_elapsed(), self.pause_count))
+        self.previous_duration = self.time_elapsed()
         self.startBtn.setEnabled(True)
-        self.endBtn.setEnabled(False)
+        self.pauseBtn.setEnabled(False)
+
+    def time_elapsed(self):
+        current_time = datetime.now()
+        # if self.previous_duration is None:
+        #     self.duration = current_time - self.start_time
+        # else:
+        self.duration = current_time - self.restart_time + self.previous_duration
+        return self.duration
 
 class MainWindow(QWidget):
     # self.widgets = {
