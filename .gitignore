@@ -3,3 +3,4 @@ fichier_bidon2
 *.Rproj
 *.Rproj.user
 _admin
+.Rproj.user

@@ -2,9 +2,6 @@
 
 # This script imports, cleans and exports data in a rds format
 
-# Note: 
-# Pour l'instant, je créé des données bidons pour commencer tout de suite à coder
-
 # Packages
 library(readr)
 library(dplyr)
@@ -14,32 +11,24 @@ library(lubridate)
 # s/o
 
 # Settings
+# a. Directory where to save datasets
+data_dir <- "data"
+# b. Path to save datasets
+data_path <- "data/data_fake.rds"
 
-# 0. Creating fake dataset
+# 0. Creating fake dataset (for now)
+# 0.1 Taking actual datetime
 now_time <- Sys.time()
 
-# 0.1 Separing each datatime element of now_time
-my_year <- year(now_time)
-my_month <- month(now_time)
-my_day <- day(now_time)
-my_hour <- hour(now_time)
-my_minute <- minute(now_time)
-my_second <- second(now_time)
+# 0.2 Generating random duration between 1 day (86400 seconds) 
+#     and 2 weeks (1209600 seconds)
+random_duration <- sort(
+  sample(86400:1209600, 10)
+)
 
-# 0.2 Creating tibble
-my_tibble <- tibble(year = my_year,
-                    month = my_month,
-                    day = my_day,
-                    hour = my_hour,
-                    minute = my_minute,
-                    second = my_second)
+# 0.3 Initiating a dataset of fake dates
+data_fake <- tibble(button_pushed = now_time + random_duration)
 
-# 0.3 Expanding tibble
-random_day <- sample(1:20, 5)
-
-# Brouillon...
-x <- ymd_hms(Sys.time())
-x + ddays(5)
-typeof(x)
-
-
+# 0.4 Writing fake dataset
+if (dir.exists(data_dir) == FALSE) {dir.create(data_dir)}
+write_rds(data_fake, "data/data_fake.rds")
