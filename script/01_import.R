@@ -1,6 +1,6 @@
-# Data import
+# Creating fake dataset
 
-# This script imports, cleans and exports data in a rds format
+# This script creates a fake dataset in order to test first steps of the program
 
 # Packages
 library(readr)
