@@ -38,6 +38,8 @@ class SaveScreen(QWidget):
 
     def return_main(self):
         self.activity.return_main()
+        self.activity.parent.activity_list_menu.clear()
+        self.activity.parent.activity_list_menu.addItems(self.activity.parent.get_activities())
         self.close()
 
     def save_activity(self):
@@ -60,7 +62,7 @@ class Activity(QWidget):
     def __init__(self,parent=None):
         super(Activity, self).__init__()
         self.setWindowTitle('QTimer example')
-        self.activity_name = parent.textbox.text()
+        self.activity_name = parent.line_menu.text()
         self.listFile=QListWidget()
         self.label=QLabel(self.activity_name)
         self.label.setAlignment(Qt.AlignCenter)
@@ -146,15 +148,16 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.w = None  # No external window yet.
-        self.textbox = QLineEdit()
-        self.textbox.setAlignment(Qt.AlignCenter)
-        self.activity_list = QComboBox()
+        self.activity_list_menu = QComboBox()
+        self.activity_list_menu.setEditable(True)
+        self.activity_list_menu.addItems(self.get_activities())
+        self.line_menu = self.activity_list_menu.lineEdit()
+        self.line_menu.setAlignment(Qt.AlignCenter)
         self.button = QPushButton("Start Activity")
         self.button.clicked.connect(self.start_activity)
         layout=QGridLayout()
 
-        layout.addWidget(self.textbox)
-        layout.addWidget(self.activity_list)
+        layout.addWidget(self.activity_list_menu)
         layout.addWidget(self.button)
         self.setLayout(layout)
 
