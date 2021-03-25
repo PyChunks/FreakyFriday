@@ -5,4 +5,4 @@ fichier_bidon2
 _admin
 .Rproj.user
 /test.py
-/data/activity.csv
+# /data/activity.csv
