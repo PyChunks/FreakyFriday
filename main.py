@@ -48,6 +48,7 @@ class SaveScreen(QWidget):
 
 
 class Activity(QWidget):
+    activity_name = None
     start_time = None
     restart_time = None
     end_time = None
@@ -59,9 +60,9 @@ class Activity(QWidget):
     def __init__(self,parent=None):
         super(Activity, self).__init__()
         self.setWindowTitle('QTimer example')
-
+        self.activity_name = parent.textbox.text()
         self.listFile=QListWidget()
-        self.label=QLabel('Label')
+        self.label=QLabel(self.activity_name)
         self.label.setAlignment(Qt.AlignCenter)
         self.startBtn=QPushButton('Start')
         self.pauseBtn=QPushButton('Pause')
@@ -91,6 +92,7 @@ class Activity(QWidget):
 
     def get_data(self):
         data = []
+        data.append(str(self.activity_name))
         data.append(str(self.start_time))
         data.append(str(self.end_time))
         data.append(str(self.duration))
