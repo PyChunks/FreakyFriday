@@ -45,7 +45,11 @@ class SaveScreen(QWidget):
     def save_activity(self):
         with open('data/activity.csv', 'a', newline='') as csvfile:
             datawriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
-            datawriter.writerow(self.activity.get_data())
+            datawriter.writerow([self.activity.activity_name,"start", self.activity.start_time])
+            for status in self.activity.pause_list:
+                datawriter.writerow([self.activity.activity_name, status[0], status[1]])
+            datawriter.writerow([self.activity.activity_name,"end", self.activity.start_time])
+
         self.return_main()
 
 
@@ -56,7 +60,9 @@ class Activity(QWidget):
     end_time = None
     duration = None
     pause_count = 0
+    pause_list = []
     previous_duration = timedelta(0)
+
 
 
     def __init__(self,parent=None):
@@ -91,16 +97,6 @@ class Activity(QWidget):
 
         self.setLayout(outerlayout)
 
-
-    def get_data(self):
-        data = []
-        data.append(str(self.activity_name))
-        data.append(str(self.start_time))
-        data.append(str(self.end_time))
-        data.append(str(self.duration))
-        data.append(str(self.pause_count))
-        return data
-
     def show_stop_screen(self):
         self.end_time = datetime.now()
         self.stop_screen = SaveScreen(self)
@@ -124,6 +120,7 @@ class Activity(QWidget):
             self.start_time = datetime.now()
             self.restart_time = self.start_time
         else:
+            self.pause_list.append(["unpause", datetime.now()])
             self.restart_time = datetime.now()
         print(self.start_time)
         self.timer.start(1000)
@@ -132,6 +129,7 @@ class Activity(QWidget):
 
     def pauseTimer(self):
         self.timer.stop()
+        self.pause_list.append(["pause", datetime.now()])
         self.pause_count += 1
         self.label.setText("Activity stopped\n You have worked for:\n {}\n You have taken {} breaks".format(self.time_elapsed(), self.pause_count))
         self.previous_duration = self.time_elapsed()
@@ -168,6 +166,15 @@ class MainWindow(QWidget):
        self.timer_window = Activity(self)
        self.hide()
        self.timer_window.show()
+
+    def get_activities(self):
+        with open("data/activity.csv") as f:
+            reader = csv.reader(f, delimiter=',')
+            activity_list = []
+            a_list = set([row[0] for row in reader])
+            for a in a_list:
+                activity_list.append(a)
+            return activity_list
 
 if __name__ == '__main__':
     app=QApplication(sys.argv)
