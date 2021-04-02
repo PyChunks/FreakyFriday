@@ -39,3 +39,19 @@ my_data <-
 # 3 Exporting variable
 write_rds(my_data, data_export)
 
+
+# 4 Exploration
+
+# NOTE: Est-ce que je crée plusieurs base de données pour chaque activité ?
+
+#quote <- my_data %>%
+#  filter(activity == "Study")
+
+
+#for (n in seq_along(levels(my_data$activity))) {
+#  activity_n <- levels(my_data$activity)[n]
+#  x <- filter(my_data, activity == activity_n)
+#  #activity_name <- paste(activity_n, sep = "_", "data")
+#  return(x)
+#  }
+
