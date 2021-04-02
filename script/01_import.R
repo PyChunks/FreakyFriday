@@ -1,6 +1,6 @@
 # Importing dataset
 
-# This script imports, cleans and exports data
+# This script imports, names and exports data
 
 # Packages
 library(readr)
@@ -18,6 +18,8 @@ data_dir <- "data"
 data_import <- "data/activity.csv"
 # c. Path used to export data
 data_export <- "data/activity.rds"
+
+# -------------------------------------------------------------------------
 
 # 1 Importing data
 my_data <- read_csv(file = data_import, 
