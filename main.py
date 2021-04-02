@@ -60,7 +60,6 @@ class Activity(QWidget):
     end_time = None
     duration = None
     pause_count = 0
-    pause_list = []
     previous_duration = timedelta(0)
 
 
@@ -119,11 +118,12 @@ class Activity(QWidget):
         if (self.start_time is None):
             self.start_time = datetime.now()
             self.restart_time = self.start_time
+            self.pause_list = []
         else:
             self.pause_list.append(["unpause", datetime.now()])
             self.restart_time = datetime.now()
         print(self.start_time)
-        self.timer.start(1000)
+        self.timer.start()
         self.startBtn.setEnabled(False)
         self.pauseBtn.setEnabled(True)
 
