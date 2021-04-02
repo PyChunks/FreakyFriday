@@ -27,46 +27,54 @@ my_data <- read_rds(data_import)
 # -------------------------------------------------------------------------
 
 
-# Test des statistiques avec la variable Study
+# Test des statistiques avec la variable my_activity
+
+act_name <- levels(my_data$activity)
 
 # Sous-ensemble d'une activité particulière
-study <- my_data %>% filter(activity == "Study")
+my_activity <- my_data %>% filter(activity == act_name[1])
 
 # Arrangé par date (au cas ou)
-study <- study %>% arrange(datetime)
+my_activity <- my_activity %>% arrange(datetime)
 
 # Fin de l'activité moins le début
-start <- study %>% filter(status == "start") %>% pull()
-end <- study %>% filter(status == "end") %>% pull()
+start <- my_activity %>% filter(status == "start") %>% pull()
+end <- my_activity %>% filter(status == "end") %>% pull()
 raw_time <- end - start
 # Time difference of 24.21883 secs
 
-# Extract pauses
-pause <- study %>% filter(status == "pause") %>% pull()
+# Est-ce qu'il y a des pauses ?
+is_pause <- "pause" %in% my_activity$status
 
-# Extract unpauses
-unpause <- study %>% filter(status == "unpause") %>% pull()
+# S'il y a au moins 1 pause...
+if (is_pause == TRUE) {
+  
+  # Extract pauses
+  pause <- my_activity %>% filter(status == "pause") %>% pull()
+  
+  # Extract unpauses
+  unpause <- my_activity %>% filter(status == "unpause") %>% pull()
+  
+  # Testing pause 
+  if (length(pause) == length(unpause)) {
+    pause_time <- sum(unpause - pause)
+  } else if (length(pause) > length(unpause)) {
+    unpause_end <- c(unpause, end)
+    pause_time <- sum(unpause_end - pause)
+  }
+  
+  # True total time
+  working_time <- raw_time - pause_time
+  
+  pause_time
 
-# Length of each vectors
-
-# Testing pause 
-if (length(pause) == length(unpause)) {
-  pause_time <- sum(unpause - pause)
-} else if (length(pause) > length(unpause)) {
-  unpause_end <- c(unpause, end)
-  pause_time <- sum(unpause_end - pause)
 }
-
-# True total time
-working_time <- raw_time - pause_time
-
-pause_time
-
+  
 # Example of first descriptive statistics
 
 list(
   travail = c(
-    activity = "Study",
+    activity = act_name[1],
     working_time = working_time
     ),
   pause = c(
@@ -83,7 +91,7 @@ list(
 "----Travail----"
 
 "Activité"
-"Study"
+"my_activity"
 
 "Temps de travail"
 "12 minutes"
