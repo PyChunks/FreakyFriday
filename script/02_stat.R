@@ -114,7 +114,4 @@ list(
 
 
 
-list(
-  pas
-)
 
