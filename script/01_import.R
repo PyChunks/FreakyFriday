@@ -1,6 +1,6 @@
 # Importing dataset
 
-# This script imports, cleans and exports data
+# This script imports, names and exports data
 
 # Packages
 library(readr)
@@ -12,25 +12,30 @@ library(ggplot2)
 # s/o
 
 # Settings
-# a. Directory where to save datasets
-data_dir <- "data"
-# b. Path to save datasets
-data_path <- "data/data_fake.rds"
+# a. Path used to import rawdata
+data_import <- "data/activity.csv"
+# b. Path used to export data
+data_export <- "data/activity.rds"
+
+# -------------------------------------------------------------------------
 
 # 1 Importing data
-my_data <- read_rds(data_path)
+my_data <- read_csv(file = data_import, 
+                    col_names = FALSE,
+                    col_types = cols(
+                      X1 = col_factor(),
+                      X2 = col_factor(levels = c("start", "pause", "unpause", "end")),
+                      X3 = col_datetime(format = "")
+                    )
+)
 
-# 2 Generating graph
+# 2 Naming variables
+my_data <- 
+  my_data %>% 
+  rename(activity = X1,
+         status = X2,
+         datetime = X3)
 
-# TO BE CONTINUED...
+# 3 Exporting variable
+write_rds(my_data, data_export)
 
-#my_data %>% arrange(button_pushed)
-#  
-
-#  filter(
-#  month(button_pushed) == 3
-#)
-
-
-#ggplot(my_data) +
-#  geom_col(mapping = aes(x = ms(button_pushed), y = ))
